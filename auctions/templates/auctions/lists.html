@@ -1,0 +1,68 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <div>
+    {% if lists.user == user %}
+        <h3>You are the author of this acution.</h3>
+    {% endif %}
+    <h2>{{lists.title}}</h2>
+    <h3>Author: {{lists.user}}</h3>
+    </div>
+    <div>
+        {% if lists.image_url %}
+            <img src="{{lists.image_url}}" style="width: 40vw;">
+        {% endif %}
+    
+        <div style="display: inline-block">
+            <h3>Description: </h3><p>{{lists.description}}</p>
+            {% if lists.category %}
+                <p>Category: <span>{{lists.category}}</span></p>
+            {% endif %}
+            {% if lists.active_status %}
+                <h2>Current Bid Price: </h2><span>${{highest_bid}}</span>
+            {% endif %}
+            {% if user.is_authenticated and lists.active_status and not lists.user == user %}
+                <form action="{% url 'toggle' lists.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Toggle watchlist</button>
+                </form>
+                <br>
+                <form action="{% url 'lists' lists.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="number" name="Auction_price" placeholder="{{highest_bid}}" min="{{min_bid}}">
+                    <button class="btn btn-primary" type="submit">Bid!!!</button>  
+                </form>
+                <hr>
+                <form action="{% url 'lists' lists.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="comment" placeholder="Comment">
+                    <button class="btn btn-primary">Comment</button>
+                </form>
+            {% endif %}
+            {% if lists.user == user and lists.active_status %}
+                <form action="{% url 'final' lists.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">End Auction</button>
+                </form>
+            {% endif %}
+            {% if not lists.active_status %}
+                {% if lists.auction_winner == user %}
+                    <h2>Congratulations!!! You won the product.</h2>
+                {% elif not lists.auction_winner %}
+                    <h2>The product has been sold out.</h2>
+                {% else %}
+                    <h2>{{lists.auction_winner}} has won the bid!!!</h2>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if comment %}
+            <hr>
+            <h2>Comments:</h2>
+            {% for comment in comment %}
+                <div>
+                    <h6><span style="color: gray;">{{comment.user}}:</span></h6>
+                    <p>{{comment.comment}}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

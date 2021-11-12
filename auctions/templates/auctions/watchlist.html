@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <h2>Watchlist</h2>
+    {% if watchlist %}
+        {% for watchlist in watchlist %}
+            <div>
+                <h3><a href="{% url 'lists' watchlist.lists.id %}">{{watchlist.lists.title}}</a></h3>
+                {% if watchlist.lists.image_url %}
+                    <img src="{{watchlist.lists.image_url}}" alt="Image" style="width: 40vw;">
+                {% endif %}
+                <div style="display: inline-block;">
+                    Listed by: <p>{{watchlist.lists.user}}</p>
+                    Description: <p>{{watchlist.lists.description}}</p>
+                    {% if watchlist.lists.category %}
+                        Category: <p>{{watchlist.lists.category}}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

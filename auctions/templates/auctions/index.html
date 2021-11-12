@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    {% for list in lists %}
+    <br>
+    <div>
+        <h3>{{list.id}}</h3>
+        <div>Listed By: {{list.user}}</div>
+        <h4><a href="{% url 'lists' list.id %}">{{list.title}}</a></h4>
+        {% if list.image_url %}
+            <div>
+                <img style="width: 40vw" src="{{list.image_url}}" alt="Image">
+            </div>
+        {% endif %}
+        <p>{{list.description}}</p>
+        {% for bid in bid %}
+            {% if bid.list == list %}
+                <p>Current Bid: ${{bid.input_value}}</p>
+            {% endif %}
+        {% endfor %}
+        <p>Starting Bid: ${{list.starting_bid}}</p>
+    </div>
+    {% endfor %}
+{% endblock %}
